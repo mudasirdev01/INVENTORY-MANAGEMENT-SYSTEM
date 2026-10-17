@@ -218,6 +218,11 @@
   font-size: 0.85rem;
 }
 
+:host ::ng-deep .user-menu.p-menu {
+  min-width: 10rem;
+  max-width: calc(100vw - 1rem);
+}
+
 :host ::ng-deep .user-avatar {
   background: #dbeafe;
   color: #1d4ed8;
