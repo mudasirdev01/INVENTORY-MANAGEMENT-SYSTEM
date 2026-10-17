@@ -1,0 +1,115 @@
+<section class="employees-page">
+  <div class="employees-heading">
+    <div>
+      <span class="eyebrow">Administration</span>
+      <h1>Employees</h1>
+      <p>Manage employee access, roles and account status.</p>
+    </div>
+    <p-button label="Add employee" icon="pi pi-plus" (onClick)="openCreate()" />
+  </div>
+
+  <p-card styleClass="employees-card">
+    <div class="filter-bar">
+      <div class="search-field">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          [(ngModel)]="search"
+          placeholder="Search name or email..."
+          (keyup.enter)="applyFilters()"
+        />
+      </div>
+      <p-select
+        [options]="roleOptions"
+        [(ngModel)]="roleFilter"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Role"
+        (onChange)="applyFilters()"
+      />
+      <p-select
+        [options]="statusOptions"
+        [(ngModel)]="statusFilter"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Status"
+        (onChange)="applyFilters()"
+      />
+      <p-button
+        label="Search"
+        icon="pi pi-search"
+        severity="secondary"
+        (onClick)="applyFilters()"
+      />
+    </div>
+
+    <p-table
+      [value]="visibleEmployees()"
+      [loading]="loading()"
+      [tableStyle]="{ 'min-width': '58rem' }"
+    >
+      <ng-template #header>
+        <tr>
+          <th>Employee</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Joined</th>
+          <th class="actions-column">Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-employee>
+        <tr>
+          <td>
+            <strong>{{ employee.first_name }} {{ employee.last_name }}</strong>
+            <small>{{ employee.email }}</small>
+          </td>
+          <td>{{ roleLabel(employee.role) }}</td>
+          <td>
+            <p-tag
+              [value]="employee.is_active ? 'Active' : 'Inactive'"
+              [severity]="employee.is_active ? 'success' : 'secondary'"
+            />
+          </td>
+          <td>{{ employee.date_joined | date: 'dd/MM/yyyy' }}</td>
+          <td class="actions-column">
+            <p-button
+              icon="pi pi-pencil"
+              [text]="true"
+              [rounded]="true"
+              severity="secondary"
+              ariaLabel="Edit employee"
+              (onClick)="openEdit(employee)"
+            />
+            <p-button
+              [icon]="employee.is_active ? 'pi pi-ban' : 'pi pi-check'"
+              [text]="true"
+              [rounded]="true"
+              [severity]="employee.is_active ? 'danger' : 'success'"
+              [ariaLabel]="employee.is_active ? 'Deactivate employee' : 'Activate employee'"
+              (onClick)="confirmStatusChange(employee)"
+            />
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="5" class="empty-state">No employees found.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <p-paginator
+      [first]="(page - 1) * pageSize"
+      [rows]="pageSize"
+      [totalRecords]="totalRecords()"
+      [rowsPerPageOptions]="[10, 20, 50]"
+      (onPageChange)="onPageChange($event)"
+    />
+  </p-card>
+</section>
+
+<app-employee-add-edit-component
+  [(visible)]="dialogVisible"
+  [employee]="editingEmployee()"
+  (saved)="onEmployeeSaved($event)"
+/>

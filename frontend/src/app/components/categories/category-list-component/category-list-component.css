@@ -1,0 +1,137 @@
+.catalog-page {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.catalog-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.eyebrow {
+  color: #2563eb;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.catalog-heading h1 {
+  margin: 0.4rem 0 0;
+  color: #172033;
+  font-size: clamp(1.7rem, 4vw, 2.25rem);
+  letter-spacing: -0.04em;
+}
+
+.catalog-heading p {
+  margin: 0.4rem 0 0;
+  color: #64748b;
+}
+
+:host ::ng-deep .catalog-card {
+  border: 1px solid #e5eaf2;
+  box-shadow: 0 0.75rem 2rem rgba(15, 23, 42, 0.05);
+}
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.search-field {
+  position: relative;
+  min-width: min(100%, 250px);
+  flex: 1;
+}
+
+.search-field i {
+  position: absolute;
+  top: 50%;
+  left: 0.8rem;
+  z-index: 1;
+  color: #94a3b8;
+  transform: translateY(-50%);
+}
+
+.search-field input {
+  width: 100%;
+  padding-left: 2.25rem;
+}
+
+.filter-bar :host ::ng-deep .p-select {
+  min-width: 10rem;
+}
+
+:host ::ng-deep .p-datatable-thead > tr > th {
+  color: #64748b;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.description-cell {
+  max-width: 26rem;
+  color: #64748b;
+}
+
+.actions-column {
+  width: 8rem;
+  text-align: right;
+}
+
+.empty-state {
+  padding: 3rem 1rem !important;
+  color: #94a3b8;
+  text-align: center;
+}
+
+.dialog-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.field label {
+  color: #334155;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.field input,
+.field textarea,
+:host ::ng-deep .field .p-select {
+  width: 100%;
+}
+
+.form-error {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.7rem 0.8rem;
+  border-radius: 0.5rem;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 0.85rem;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .catalog-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

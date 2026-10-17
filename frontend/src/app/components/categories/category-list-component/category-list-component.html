@@ -1,0 +1,101 @@
+<section class="catalog-page">
+  <div class="catalog-heading">
+    <div>
+      <span class="eyebrow">Catalog</span>
+      <h1>Categories</h1>
+      <p>Organize products into clear, manageable groups.</p>
+    </div>
+    @if (canManage()) {
+      <p-button label="Add category" icon="pi pi-plus" (onClick)="openCreate()" />
+    }
+  </div>
+  <p-card styleClass="catalog-card">
+    <div class="filter-bar">
+      <div class="search-field">
+        <i class="pi pi-search"></i
+        ><input
+          pInputText
+          [(ngModel)]="search"
+          placeholder="Search categories..."
+          (keyup.enter)="applyFilters()"
+        />
+      </div>
+      <p-select
+        [options]="statusOptions"
+        [(ngModel)]="statusFilter"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Status"
+        (onChange)="applyFilters()"
+      /><p-button
+        label="Search"
+        icon="pi pi-search"
+        severity="secondary"
+        (onClick)="applyFilters()"
+      />
+    </div>
+    <p-table [value]="categories()" [loading]="loading()" [tableStyle]="{ 'min-width': '42rem' }">
+      <ng-template #header
+        ><tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Status</th>
+          @if (canManage()) {
+            <th class="actions-column">Actions</th>
+          }
+        </tr></ng-template
+      >
+      <ng-template #body let-category
+        ><tr>
+          <td>
+            <strong>{{ category.name }}</strong>
+          </td>
+          <td class="description-cell">{{ category.description || '—' }}</td>
+          <td>
+            <p-tag
+              [value]="category.is_active ? 'Active' : 'Inactive'"
+              [severity]="category.is_active ? 'success' : 'secondary'"
+            />
+          </td>
+          @if (canManage()) {
+            <td class="actions-column">
+              <p-button
+                icon="pi pi-pencil"
+                [text]="true"
+                [rounded]="true"
+                severity="secondary"
+                ariaLabel="Edit category"
+                (onClick)="openEdit(category)"
+              /><p-button
+                [icon]="category.is_active ? 'pi pi-ban' : 'pi pi-check'"
+                [text]="true"
+                [rounded]="true"
+                [severity]="category.is_active ? 'danger' : 'success'"
+                [ariaLabel]="category.is_active ? 'Deactivate category' : 'Activate category'"
+                (onClick)="confirmStatusChange(category)"
+              />
+            </td>
+          }</tr
+      ></ng-template>
+      <ng-template #emptymessage
+        ><tr>
+          <td [attr.colspan]="canManage() ? 4 : 3" class="empty-state">No categories found.</td>
+        </tr></ng-template
+      >
+    </p-table>
+    <p-paginator
+      [first]="(page - 1) * pageSize"
+      [rows]="pageSize"
+      [totalRecords]="totalRecords()"
+      [rowsPerPageOptions]="[10, 20, 50]"
+      (onPageChange)="onPageChange($event)"
+    />
+  </p-card>
+</section>
+@if (canManage()) {
+  <app-category-add-edit-component
+    [(visible)]="dialogVisible"
+    [category]="editingCategory()"
+    (saved)="onCategorySaved($event)"
+  />
+}

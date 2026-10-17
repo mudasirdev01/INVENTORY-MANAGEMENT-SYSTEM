@@ -1,0 +1,77 @@
+<p-dialog
+  [(visible)]="visible"
+  (visibleChange)="visibleChange.emit($event)"
+  [modal]="true"
+  [draggable]="false"
+  [closable]="!saving()"
+  header="Record payment"
+  [style]="{ width: 'min(500px, calc(100vw - 2rem))' }"
+  ><form class="dialog-form" (ngSubmit)="record()">
+    @if (error()) {
+      <p class="form-error">{{ error() }}</p>
+    }
+    @if (invoice; as item) {
+      <div class="balance-callout">
+        <span>Outstanding balance</span><strong>₹{{ item.outstanding_amount }}</strong>
+      </div>
+    }
+    <div class="field">
+      <label>Amount</label
+      ><p-inputnumber
+        name="amount"
+        [(ngModel)]="amount"
+        mode="decimal"
+        [min]="0.01"
+        [minFractionDigits]="2"
+        [maxFractionDigits]="2"
+        [disabled]="saving()"
+      />
+    </div>
+    <div class="field">
+      <label>Payment method</label
+      ><p-select
+        name="method"
+        [options]="methods"
+        [(ngModel)]="method"
+        optionLabel="label"
+        optionValue="value"
+        [disabled]="saving()"
+      />
+    </div>
+    <div class="field">
+      <label>Payment date</label
+      ><p-datepicker
+        name="date"
+        [(ngModel)]="date"
+        dateFormat="dd/mm/yy"
+        placeholder="DD/MM/YYYY"
+        [showIcon]="true"
+        [disabled]="saving()"
+      />
+    </div>
+    <div class="field">
+      <label>Reference <span>(optional)</span></label
+      ><input
+        pInputText
+        name="reference"
+        [(ngModel)]="reference"
+        placeholder="Transaction or receipt number"
+        [disabled]="saving()"
+      />
+    </div>
+    <div class="dialog-actions">
+      <p-button
+        type="button"
+        label="Cancel"
+        severity="secondary"
+        [text]="true"
+        (onClick)="close()"
+      /><p-button
+        type="submit"
+        label="Record payment"
+        icon="pi pi-check"
+        severity="success"
+        [loading]="saving()"
+      />
+    </div></form
+></p-dialog>

@@ -1,0 +1,72 @@
+<p-dialog
+  [(visible)]="visible"
+  (visibleChange)="visibleChange.emit($event)"
+  [modal]="true"
+  [draggable]="false"
+  header="Order details"
+  [style]="{ width: 'min(700px, calc(100vw - 2rem))' }"
+>
+  @if (order; as item) {
+    <div class="details-content">
+      <div class="details-heading">
+        <div>
+          <span class="eyebrow">Sales order</span>
+          <h2>{{ item.order_number }}</h2>
+          <p>{{ item.customer_name }}</p>
+        </div>
+        <p-tag [value]="item.status_display" [severity]="statusSeverity(item.status)" />
+      </div>
+      <div class="details-meta">
+        <span>Created {{ item.created_at | displayDate }}</span
+        ><strong>Total ₹{{ item.total_amount | number: '1.2-2' }}</strong>
+      </div>
+      <p-table [value]="item.items"
+        ><ng-template #header
+          ><tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Unit price</th>
+            <th>Line total</th>
+          </tr></ng-template
+        ><ng-template #body let-line
+          ><tr>
+            <td>
+              <strong>{{ line.product_name }}</strong
+              ><small>{{ line.product_code }}</small>
+            </td>
+            <td>{{ line.quantity }}</td>
+            <td>₹{{ line.unit_price }}</td>
+            <td>₹{{ line.line_total }}</td>
+          </tr></ng-template
+        ></p-table
+      >
+      @if (canManage && (item.status === 'pending' || item.status === 'confirmed')) {
+        <div class="details-actions">
+          @if (item.status === 'pending') {
+            <p-button
+              label="Confirm"
+              icon="pi pi-check"
+              severity="success"
+              (onClick)="action.emit('confirm')"
+            />
+          }
+          @if (item.status === 'confirmed') {
+            <p-button
+              label="Dispatch"
+              icon="pi pi-send"
+              severity="info"
+              (onClick)="action.emit('dispatch')"
+            />
+          }
+          <p-button
+            label="Cancel order"
+            icon="pi pi-times"
+            severity="danger"
+            [outlined]="true"
+            (onClick)="action.emit('cancel')"
+          />
+        </div>
+      }
+    </div>
+  }
+</p-dialog>

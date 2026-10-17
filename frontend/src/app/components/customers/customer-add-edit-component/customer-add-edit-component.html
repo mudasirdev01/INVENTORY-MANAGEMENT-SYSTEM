@@ -1,0 +1,136 @@
+<p-dialog
+  [(visible)]="visible"
+  (visibleChange)="visibleChange.emit($event)"
+  [modal]="true"
+  [draggable]="false"
+  [closable]="!saving()"
+  [header]="customer ? 'Edit customer' : 'Add customer'"
+  [style]="{ width: 'min(680px, calc(100vw - 2rem))' }"
+>
+  <form class="dialog-form" (ngSubmit)="save()">
+    @if (formError()) {
+      <p class="form-error"><i class="pi pi-exclamation-circle"></i>{{ formError() }}</p>
+    }
+    <div class="form-grid">
+      <div class="field">
+        <label for="customer-name">Name <span>*</span></label
+        ><input
+          pInputText
+          id="customer-name"
+          name="name"
+          [(ngModel)]="form.name"
+          placeholder="Customer name"
+          [disabled]="saving()"
+        />
+      </div>
+      <div class="field">
+        <label for="customer-email">Email</label
+        ><input
+          pInputText
+          type="email"
+          id="customer-email"
+          name="email"
+          [(ngModel)]="form.email"
+          placeholder="name@example.com"
+          [disabled]="saving()"
+        />
+      </div>
+      <div class="field">
+        <label for="customer-phone">Phone</label
+        ><input
+          pInputText
+          id="customer-phone"
+          name="phone"
+          [(ngModel)]="form.phone"
+          placeholder="Phone number"
+          [disabled]="saving()"
+        />
+      </div>
+      <div class="field">
+        <label for="customer-country">Country</label
+        ><input
+          pInputText
+          id="customer-country"
+          name="country"
+          [(ngModel)]="form.country"
+          placeholder="Country"
+          [disabled]="saving()"
+        />
+      </div>
+      <div class="field">
+        <label for="customer-city">City</label
+        ><input
+          pInputText
+          id="customer-city"
+          name="city"
+          [(ngModel)]="form.city"
+          placeholder="City"
+          [disabled]="saving()"
+        />
+      </div>
+      <div class="field">
+        <label for="customer-state">State</label
+        ><input
+          pInputText
+          id="customer-state"
+          name="state"
+          [(ngModel)]="form.state"
+          placeholder="State"
+          [disabled]="saving()"
+        />
+      </div>
+      <div class="field">
+        <label for="customer-postal-code">Postal code</label
+        ><input
+          pInputText
+          id="customer-postal-code"
+          name="postal_code"
+          [(ngModel)]="form.postal_code"
+          placeholder="Postal code"
+          [disabled]="saving()"
+        />
+      </div>
+    </div>
+    <div class="field">
+      <label for="customer-address">Address</label
+      ><textarea
+        pTextarea
+        id="customer-address"
+        name="address"
+        [(ngModel)]="form.address"
+        rows="3"
+        placeholder="Street address"
+        [disabled]="saving()"
+      ></textarea>
+    </div>
+    @if (customer) {
+      <div class="field">
+        <label for="customer-status">Status</label
+        ><p-select
+          inputId="customer-status"
+          name="is_active"
+          [options]="statusOptions"
+          [(ngModel)]="form.is_active"
+          optionLabel="label"
+          optionValue="value"
+          [disabled]="saving()"
+        />
+      </div>
+    }
+    <div class="dialog-actions">
+      <p-button
+        type="button"
+        label="Cancel"
+        severity="secondary"
+        [text]="true"
+        (onClick)="close()"
+        [disabled]="saving()"
+      /><p-button
+        type="submit"
+        [label]="customer ? 'Save changes' : 'Create customer'"
+        icon="pi pi-check"
+        [loading]="saving()"
+      />
+    </div>
+  </form>
+</p-dialog>

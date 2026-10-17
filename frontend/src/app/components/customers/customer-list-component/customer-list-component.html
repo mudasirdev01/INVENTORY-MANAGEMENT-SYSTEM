@@ -1,0 +1,132 @@
+<section class="customers-page">
+  <div class="customers-heading">
+    <div>
+      <span class="eyebrow">Relationships</span>
+      <h1>Customers</h1>
+      <p>Keep customer contact details organized and up to date.</p>
+    </div>
+    @if (canManage()) {
+      <p-button label="Add customer" icon="pi pi-plus" (onClick)="openCreate()" />
+    }
+  </div>
+  <p-card styleClass="customers-card">
+    <div class="filter-bar">
+      <div class="search-field">
+        <i class="pi pi-search"></i
+        ><input
+          pInputText
+          [(ngModel)]="search"
+          placeholder="Search customers..."
+          (keyup.enter)="applyFilters()"
+        />
+      </div>
+      <p-select
+        [options]="statusOptions"
+        [(ngModel)]="statusFilter"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Status"
+        (onChange)="applyFilters()"
+      /><p-button
+        label="Search"
+        icon="pi pi-search"
+        severity="secondary"
+        (onClick)="applyFilters()"
+      />
+    </div>
+    <p-table [value]="customers()" [loading]="loading()" [tableStyle]="{ 'min-width': '72rem' }">
+      <ng-template #header
+        ><tr>
+          <th>Customer</th>
+          <th>Contact</th>
+          <th>Location</th>
+          <th>Address</th>
+          <th>Status</th>
+          @if (canManage()) {
+            <th class="actions-column">Actions</th>
+          }
+        </tr></ng-template
+      >
+      <ng-template #body let-customer
+        ><tr>
+          <td>
+            <strong>{{ customer.name }}</strong
+            ><small>#{{ customer.id }}</small>
+          </td>
+          <td>
+            @if (customer.email) {
+              <span>{{ customer.email }}</span>
+            }
+            @if (customer.phone) {
+              <small>{{ customer.phone }}</small>
+            }
+            @if (!customer.email && !customer.phone) {
+              <small>—</small>
+            }
+          </td>
+          <td>
+            @if (customer.city) {
+              <span>{{ customer.city }}</span>
+            }
+            @if (customer.state || customer.country) {
+              <small
+                >{{ customer.state }}{{ customer.state && customer.country ? ', ' : ''
+                }}{{ customer.country }}</small
+              >
+            }
+            @if (!customer.city && !customer.state && !customer.country) {
+              <small>—</small>
+            }
+          </td>
+          <td class="address-cell">
+            {{ customer.address || '—'
+            }}{{ customer.postal_code ? ' · ' + customer.postal_code : '' }}
+          </td>
+          <td>
+            <p-tag
+              [value]="customer.is_active ? 'Active' : 'Inactive'"
+              [severity]="customer.is_active ? 'success' : 'secondary'"
+            />
+          </td>
+          @if (canManage()) {
+            <td class="actions-column">
+              <p-button
+                icon="pi pi-pencil"
+                [text]="true"
+                [rounded]="true"
+                severity="secondary"
+                ariaLabel="Edit customer"
+                (onClick)="openEdit(customer)"
+              /><p-button
+                [icon]="customer.is_active ? 'pi pi-ban' : 'pi pi-check'"
+                [text]="true"
+                [rounded]="true"
+                [severity]="customer.is_active ? 'danger' : 'success'"
+                [ariaLabel]="customer.is_active ? 'Deactivate customer' : 'Activate customer'"
+                (onClick)="confirmStatusChange(customer)"
+              />
+            </td>
+          }</tr
+      ></ng-template>
+      <ng-template #emptymessage
+        ><tr>
+          <td [attr.colspan]="canManage() ? 6 : 5" class="empty-state">No customers found.</td>
+        </tr></ng-template
+      >
+    </p-table>
+    <p-paginator
+      [first]="(page - 1) * pageSize"
+      [rows]="pageSize"
+      [totalRecords]="totalRecords()"
+      [rowsPerPageOptions]="[10, 20, 50]"
+      (onPageChange)="onPageChange($event)"
+    />
+  </p-card>
+</section>
+@if (canManage()) {
+  <app-customer-add-edit-component
+    [(visible)]="dialogVisible"
+    [customer]="editingCustomer()"
+    (saved)="onCustomerSaved($event)"
+  />
+}

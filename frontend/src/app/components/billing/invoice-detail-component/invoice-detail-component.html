@@ -1,0 +1,90 @@
+<p-dialog
+  [(visible)]="visible"
+  (visibleChange)="visibleChange.emit($event)"
+  [modal]="true"
+  [draggable]="false"
+  header="Invoice details"
+  [style]="{ width: 'min(760px, calc(100vw - 2rem))' }"
+>
+  @if (loading) {
+    <div class="loading-detail">Loading invoice...</div>
+  }
+  @if (invoice; as item) {
+    <div class="details-content">
+      <div class="details-heading">
+        <div>
+          <span class="eyebrow">Invoice</span>
+          <h2>{{ item.invoice_number }}</h2>
+          <p>{{ item.customer_name }} · Order {{ item.order_number }}</p>
+        </div>
+        <p-tag [value]="item.payment_status" [severity]="statusSeverity(item.payment_status)" />
+      </div>
+      <div class="summary-grid">
+        <div>
+          <span>Total</span><strong>₹{{ item.total_amount | number: '1.2-2' }}</strong>
+        </div>
+        <div>
+          <span>Paid</span><strong>₹{{ item.paid_amount | number: '1.2-2' }}</strong>
+        </div>
+        <div>
+          <span>Outstanding</span><strong>₹{{ item.outstanding_amount | number: '1.2-2' }}</strong>
+        </div>
+      </div>
+      <p-table [value]="item.items"
+        ><ng-template #header
+          ><tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Unit price</th>
+            <th>Line total</th>
+          </tr></ng-template
+        ><ng-template #body let-line
+          ><tr>
+            <td>
+              <strong>{{ line.product_name }}</strong
+              ><small>{{ line.product_code }}</small>
+            </td>
+            <td>{{ line.quantity }}</td>
+            <td>₹{{ line.unit_price }}</td>
+            <td>₹{{ line.line_total }}</td>
+          </tr></ng-template
+        ></p-table
+      >
+      <div class="history-heading">
+        <h3>Payment history</h3>
+        <span>{{ paymentTotal }} payment(s)</span>
+      </div>
+      <p-table [value]="payments"
+        ><ng-template #header
+          ><tr>
+            <th>Date</th>
+            <th>Method</th>
+            <th>Reference</th>
+            <th>Amount</th>
+          </tr></ng-template
+        ><ng-template #body let-payment
+          ><tr>
+            <td>{{ payment.payment_date | displayDate }}</td>
+            <td>{{ payment.payment_method_display }}</td>
+            <td>{{ payment.reference || '—' }}</td>
+            <td>₹{{ payment.amount }}</td>
+          </tr></ng-template
+        ><ng-template #emptymessage
+          ><tr>
+            <td colspan="4" class="empty-state">No payments recorded.</td>
+          </tr></ng-template
+        ></p-table
+      >
+      @if (canManage && item.payment_status !== 'paid') {
+        <div class="details-actions">
+          <p-button
+            label="Record payment"
+            icon="pi pi-wallet"
+            severity="success"
+            (onClick)="record.emit()"
+          />
+        </div>
+      }
+    </div>
+  }
+</p-dialog>

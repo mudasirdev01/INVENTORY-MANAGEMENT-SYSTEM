@@ -1,0 +1,154 @@
+<section class="billing-page">
+  <div class="billing-heading">
+    <div>
+      <span class="eyebrow">Finance</span>
+      <h1>Billing &amp; Invoices</h1>
+      <p>Track invoices, payments and outstanding customer balances.</p>
+    </div>
+    @if (canManage()) {
+      <p-button label="Create invoice" icon="pi pi-file-plus" (onClick)="openCreate()" />
+    }
+  </div>
+  <p-card styleClass="billing-card"
+    ><div class="filter-bar">
+      <div class="search-field">
+        <i class="pi pi-search"></i
+        ><input
+          pInputText
+          [(ngModel)]="search"
+          placeholder="Search invoice, order or customer..."
+          (keyup.enter)="applyFilters()"
+        />
+      </div>
+      <p-select
+        [options]="statusOptions"
+        [(ngModel)]="paymentStatus"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Payment status"
+        (onChange)="applyFilters()"
+      /><p-button
+        label="Search"
+        icon="pi pi-search"
+        severity="secondary"
+        (onClick)="applyFilters()"
+      />
+    </div>
+    <p-table [value]="invoices()" [loading]="loading()" [tableStyle]="{ 'min-width': '68rem' }"
+      ><ng-template #header
+        ><tr>
+          <th>Invoice</th>
+          <th>Order</th>
+          <th>Customer</th>
+          <th>Total</th>
+          <th>Paid</th>
+          <th>Outstanding</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr></ng-template
+      ><ng-template #body let-invoice
+        ><tr>
+          <td>
+            <strong class="invoice-number">{{ invoice.invoice_number }}</strong
+            ><small>{{ invoice.created_at | displayDate }}</small>
+          </td>
+          <td>{{ invoice.order_number }}</td>
+          <td>{{ invoice.customer_name }}</td>
+          <td>₹{{ invoice.total_amount | number: '1.2-2' }}</td>
+          <td>₹{{ invoice.paid_amount | number: '1.2-2' }}</td>
+          <td class="outstanding-value">₹{{ invoice.outstanding_amount | number: '1.2-2' }}</td>
+          <td>
+            <p-tag
+              [value]="invoice.payment_status"
+              [severity]="statusSeverity(invoice.payment_status)"
+            />
+          </td>
+          <td class="actions-column">
+            <p-button
+              icon="pi pi-eye"
+              [text]="true"
+              [rounded]="true"
+              severity="secondary"
+              (onClick)="openDetails(invoice)"
+            />
+            @if (canManage() && invoice.payment_status !== 'paid') {
+              <p-button
+                icon="pi pi-wallet"
+                [text]="true"
+                [rounded]="true"
+                severity="success"
+                (onClick)="openPayment(invoice)"
+              />
+            }
+          </td></tr></ng-template
+      ><ng-template #emptymessage
+        ><tr>
+          <td colspan="8" class="empty-state">No invoices found.</td>
+        </tr></ng-template
+      ></p-table
+    ><p-paginator
+      [first]="(page - 1) * pageSize"
+      [rows]="pageSize"
+      [totalRecords]="totalRecords()"
+      [rowsPerPageOptions]="[10, 20, 50]"
+      (onPageChange)="onPageChange($event)"
+  /></p-card>
+</section>
+@if (canManage()) {
+  <p-dialog
+    [(visible)]="createVisible"
+    [modal]="true"
+    [draggable]="false"
+    header="Create invoice"
+    [style]="{ width: 'min(620px, calc(100vw - 2rem))' }"
+    ><form class="dialog-form" (ngSubmit)="createInvoice()">
+      @if (formError()) {
+        <p class="form-error">{{ formError() }}</p>
+      }
+      <p class="dialog-hint">Only dispatched orders without an invoice are available.</p>
+      <div class="field">
+        <label>Dispatched order</label
+        ><p-select
+          name="order"
+          [options]="eligibleOrders()"
+          [(ngModel)]="selectedOrderId"
+          optionLabel="order_number"
+          optionValue="id"
+          placeholder="Select an order"
+          [disabled]="saving()"
+        />
+      </div>
+      @if (!eligibleOrders().length) {
+        <p class="empty-inline">No eligible dispatched orders available.</p>
+      }
+      <div class="dialog-actions">
+        <p-button
+          type="button"
+          label="Cancel"
+          severity="secondary"
+          [text]="true"
+          (onClick)="createVisible = false"
+        /><p-button
+          type="submit"
+          label="Create invoice"
+          icon="pi pi-check"
+          [loading]="saving()"
+          [disabled]="!selectedOrderId"
+        />
+      </div></form
+  ></p-dialog>
+}
+<app-invoice-detail-component
+  [(visible)]="detailsVisible"
+  [invoice]="selectedInvoice()"
+  [payments]="payments()"
+  [paymentTotal]="paymentTotal()"
+  [loading]="detailLoading()"
+  [canManage]="canManage()"
+  (record)="selectedInvoice() && openPayment(selectedInvoice()!)"
+/>
+<app-payment-component
+  [(visible)]="paymentVisible"
+  [invoice]="selectedInvoice()"
+  (saved)="onPaymentSaved()"
+/>

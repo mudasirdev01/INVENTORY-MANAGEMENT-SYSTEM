@@ -1,0 +1,409 @@
+:host {
+  display: block;
+}
+
+$ink: #102044;
+$muted: #64748b;
+$line: #e5ebf3;
+$blue: #2563eb;
+
+.analytics-page {
+  display: grid;
+  gap: 1rem;
+  color: $ink;
+}
+
+.dashboard-heading,
+.heading-actions,
+.date-range,
+.card-heading,
+.table-row {
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-heading {
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.eyebrow {
+  color: $blue;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.dashboard-heading h1 {
+  margin: 0.35rem 0 0.15rem;
+  color: $ink;
+  font-size: clamp(1.65rem, 3vw, 2.1rem);
+  letter-spacing: -0.045em;
+}
+
+.dashboard-heading p,
+.card-heading p {
+  margin: 0;
+  color: $muted;
+  font-size: 0.8rem;
+}
+
+.heading-actions {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.date-range {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.date-field {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 10.3rem;
+  min-height: 3.05rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid #dbe4ef;
+  border-radius: 0.5rem;
+  background: #fff;
+  color: $muted;
+}
+.date-field > i:first-child {
+  color: #334155;
+  font-size: 0.9rem;
+}
+.date-field-content {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+  gap: 0.08rem;
+}
+.date-field-content > span {
+  color: #64748b;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+.date-chevron {
+  color: #64748b;
+  font-size: 0.7rem;
+}
+.range-separator {
+  display: grid;
+  place-items: center;
+  width: 0.65rem;
+  min-width: 0.65rem;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+}
+:host ::ng-deep .date-range .p-datepicker {
+  width: 100%;
+}
+:host ::ng-deep .date-range .p-datepicker-input {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  color: #334155;
+  font-size: 0.8rem;
+}
+:host ::ng-deep .date-range .p-datepicker-input:focus {
+  box-shadow: none;
+}
+:host ::ng-deep .heading-actions > .p-button {
+  min-height: 3.05rem;
+  padding-inline: 1.1rem;
+}
+:host ::ng-deep .heading-actions .p-tag {
+  min-height: 3.05rem;
+  padding-inline: 0.8rem;
+}
+
+:host ::ng-deep .date-card,
+:host ::ng-deep .report-card,
+:host ::ng-deep .kpi-card {
+  border: 1px solid $line;
+  border-radius: 0.65rem;
+  box-shadow: 0 0.45rem 1.25rem rgba(15, 23, 42, 0.035);
+}
+
+:host ::ng-deep .kpi-card .p-card-body {
+  height: 100%;
+  padding: 1rem;
+}
+.kpi-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+.primary-kpis {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.financial-kpis {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.kpi-card {
+  min-width: 0;
+  min-height: 8.6rem;
+}
+.financial-card {
+  min-height: 7.8rem;
+}
+.kpi-content {
+  display: grid;
+  grid-template-columns: 2.35rem minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
+  align-content: center;
+  align-items: center;
+  column-gap: 0.75rem;
+  height: 100%;
+  min-width: 0;
+}
+.kpi-icon {
+  display: grid;
+  grid-row: 1 / 4;
+  place-items: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  margin: 0;
+  border-radius: 0.65rem;
+  font-size: 1.1rem;
+}
+.kpi-label {
+  overflow: hidden;
+  color: #475569;
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.kpi-card strong {
+  display: block;
+  margin: 0.12rem 0 0.12rem;
+  overflow: hidden;
+  color: $ink;
+  font-size: clamp(1.3rem, 2vw, 1.65rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.kpi-card small {
+  color: #94a3b8;
+  font-size: 0.7rem;
+  line-height: 1.2;
+}
+.blue {
+  background: #e5f0ff;
+  color: #1670f5;
+}
+.violet {
+  background: #f0ebff;
+  color: #7547f5;
+}
+.rose {
+  background: #ffecef;
+  color: #ef3454;
+}
+.amber {
+  background: #fff2e4;
+  color: #f47b16;
+}
+.red {
+  background: #ffe9eb;
+  color: #ef334e;
+}
+.green {
+  background: #e2f8ee;
+  color: #08a968;
+}
+.warning-card {
+  border-color: #f7d8bb !important;
+}
+
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+:host ::ng-deep .chart-card .p-card-body {
+  min-height: 20rem;
+  padding: 1rem 1.1rem 0.8rem;
+}
+:host ::ng-deep .table-card .p-card-body {
+  min-height: 17rem;
+  padding: 1rem 1.1rem 0.8rem;
+}
+.card-heading {
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.card-heading h2 {
+  margin: 0 0 0.25rem;
+  color: $ink;
+  font-size: 0.98rem;
+  letter-spacing: -0.02em;
+}
+.card-heading h2 i {
+  margin-right: 0.35rem;
+  font-size: 0.95rem;
+}
+.blue-text {
+  color: #1670f5;
+}
+.amber-text {
+  color: #f59e0b;
+}
+.red-text {
+  color: #ef334e;
+}
+.chart-unit {
+  color: $muted;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+:host ::ng-deep .chart-card .p-chart {
+  display: block;
+  width: 100%;
+}
+.empty-state {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 0.55rem;
+  min-height: 12rem;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  text-align: center;
+}
+.empty-state i {
+  font-size: 1.4rem;
+}
+.empty-state.healthy {
+  color: #0eaa6b;
+}
+
+.compact-table {
+  display: grid;
+  min-width: 0;
+}
+.table-row {
+  display: grid;
+  grid-template-columns: 1.05fr 1.15fr 0.9fr 0.9fr 0.85fr;
+  gap: 0.55rem;
+  min-height: 2.6rem;
+  border-bottom: 1px solid #edf1f5;
+  color: #64748b;
+  font-size: 0.72rem;
+}
+.table-row:last-child {
+  border-bottom: 0;
+}
+.table-row strong {
+  overflow: hidden;
+  color: #1467dc;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.table-header {
+  min-height: 2rem;
+  color: #94a3b8;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.table-row small {
+  display: block;
+  color: #94a3b8;
+}
+.alert-arrow {
+  color: #f59e0b;
+  text-align: right;
+}
+.row-skeleton {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #edf1f5;
+}
+.error-panel {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #fecaca;
+  border-radius: 0.55rem;
+  background: #fff5f5;
+  color: #b91c1c;
+}
+.error-panel span {
+  flex: 1;
+  font-size: 0.82rem;
+}
+
+@media (max-width: 1100px) {
+  .primary-kpis {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .heading-actions {
+    justify-content: flex-start;
+  }
+  .primary-kpis,
+  .financial-kpis,
+  .reports-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .table-card {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 520px) {
+  .heading-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .date-range {
+    justify-content: space-between;
+    width: 100%;
+  }
+  .date-field {
+    min-width: 0;
+    flex: 1;
+  }
+  .date-range .p-datepicker {
+    width: 100%;
+  }
+  .primary-kpis,
+  .financial-kpis,
+  .reports-grid {
+    grid-template-columns: 1fr;
+  }
+  .table-card {
+    grid-column: auto;
+  }
+  .table-row {
+    grid-template-columns: 1.1fr 1fr 0.85fr;
+  }
+  .table-row > :nth-child(4),
+  .table-row > :nth-child(5) {
+    display: none;
+  }
+}

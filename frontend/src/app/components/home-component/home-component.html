@@ -1,0 +1,59 @@
+<div class="dashboard-shell" [class.sidebar-collapsed]="sidebarCollapsed">
+  <aside class="desktop-sidebar" [class.collapsed]="sidebarCollapsed">
+    <div class="sidebar-brand">
+      <div class="brand-mark"><i class="pi pi-box"></i></div>
+      <div>
+        <strong>Stockwise</strong>
+        <span>Inventory system</span>
+      </div>
+      <p-button
+        class="sidebar-toggle"
+        [icon]="sidebarCollapsed ? 'pi pi-angle-right' : 'pi pi-angle-left'"
+        [text]="true"
+        [rounded]="true"
+        severity="secondary"
+        ariaLabel="Toggle sidebar"
+        (onClick)="sidebarCollapsed = !sidebarCollapsed"
+      />
+    </div>
+
+    <p-divider />
+    <span class="nav-label">Workspace</span>
+    <app-menu-list [collapsed]="sidebarCollapsed" />
+
+    <div class="sidebar-footer">
+      <i class="pi pi-shield"></i>
+      <span>Secure workspace</span>
+    </div>
+  </aside>
+
+  <div class="dashboard-content">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div>
+          <span class="topbar-kicker">Workspace</span>
+          <span class="topbar-title">Dashboard</span>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <span class="user-label">{{ workspaceLabel() }} workspace</span>
+        <p-avatar [label]="avatarLabel()" shape="circle" styleClass="user-avatar" />
+        <p-button
+          icon="pi pi-chevron-down"
+          [text]="true"
+          [rounded]="true"
+          severity="secondary"
+          ariaLabel="Open user menu"
+          (onClick)="userMenu.toggle($event)"
+        />
+        <p-menu #userMenu [model]="userMenuItems" [popup]="true" />
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <router-outlet />
+    </main>
+    <app-footer />
+  </div>
+</div>

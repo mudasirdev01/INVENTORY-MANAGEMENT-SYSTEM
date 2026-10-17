@@ -1,0 +1,297 @@
+<section class="analytics-page">
+  <header class="dashboard-heading">
+    <div>
+      <span class="eyebrow">Overview</span>
+      <h1>Hi, {{ displayName() }}!</h1>
+      <p>Here's what's happening with your inventory and sales today.</p>
+    </div>
+    <div class="heading-actions">
+      <div class="date-range" aria-label="Report date range">
+        <div class="date-field">
+          <i class="pi pi-calendar"></i>
+          <div class="date-field-content">
+            <span>From Date</span
+            ><p-datepicker
+              [(ngModel)]="startDate"
+              dateFormat="dd/mm/yy"
+              placeholder="DD/MM/YYYY"
+              [showIcon]="false"
+              inputStyleClass="date-input"
+            />
+          </div>
+          <i class="pi pi-chevron-down date-chevron"></i>
+        </div>
+        <span class="range-separator" aria-hidden="true">-</span>
+        <div class="date-field">
+          <i class="pi pi-calendar"></i>
+          <div class="date-field-content">
+            <span>To Date</span
+            ><p-datepicker
+              [(ngModel)]="endDate"
+              dateFormat="dd/mm/yy"
+              placeholder="DD/MM/YYYY"
+              [showIcon]="false"
+              inputStyleClass="date-input"
+            />
+          </div>
+          <i class="pi pi-chevron-down date-chevron"></i>
+        </div>
+      </div>
+      <p-button label="Apply" severity="primary" size="small" (onClick)="applyDateRange()" />
+      <p-button
+        label="Clear"
+        icon="pi pi-times"
+        [text]="true"
+        severity="secondary"
+        size="small"
+        [disabled]="!startDate && !endDate"
+        (onClick)="clearDateRange()"
+      />
+    </div>
+  </header>
+
+  @if (error()) {
+    <div class="error-panel">
+      <i class="pi pi-exclamation-circle"></i><span>{{ error() }}</span
+      ><p-button
+        label="Retry"
+        icon="pi pi-refresh"
+        severity="danger"
+        [outlined]="true"
+        (onClick)="applyDateRange()"
+      />
+    </div>
+  }
+
+  <section class="kpi-grid primary-kpis" aria-label="Inventory key performance indicators">
+    @if (loading()) {
+      @for (item of [1, 2, 3, 4, 5]; track item) {
+        <p-card styleClass="kpi-card skeleton-card"
+          ><p-skeleton width="2.5rem" height="2.5rem" /><p-skeleton
+            width="6rem"
+            height=".75rem" /><p-skeleton width="4rem" height="1.8rem"
+        /></p-card>
+      }
+    } @else if (summary(); as data) {
+      <p-card styleClass="kpi-card"
+        ><div class="kpi-content">
+          <div class="kpi-icon blue"><i class="pi pi-box"></i></div>
+          <div class="kpi-label">Total Products</div>
+          <strong>{{ data.products_count }}</strong
+          ><small>Active products</small>
+        </div></p-card
+      >
+      <p-card styleClass="kpi-card"
+        ><div class="kpi-content">
+          <div class="kpi-icon violet"><i class="pi pi-users"></i></div>
+          <div class="kpi-label">Total Customers</div>
+          <strong>{{ data.customers_count }}</strong
+          ><small>Active customers</small>
+        </div></p-card
+      >
+      <p-card styleClass="kpi-card"
+        ><div class="kpi-content">
+          <div class="kpi-icon rose"><i class="pi pi-shopping-cart"></i></div>
+          <div class="kpi-label">Total Orders</div>
+          <strong>{{ data.orders_count }}</strong
+          ><small>Non-cancelled orders</small>
+        </div></p-card
+      >
+      <p-card styleClass="kpi-card"
+        ><div class="kpi-content">
+          <div class="kpi-icon amber"><i class="pi pi-database"></i></div>
+          <div class="kpi-label">Total Stock</div>
+          <strong>{{ data.stock_items_count | number: '1.0-0' }}</strong
+          ><small>Products with stock</small>
+        </div></p-card
+      >
+      <p-card styleClass="kpi-card warning-card"
+        ><div class="kpi-content">
+          <div class="kpi-icon red"><i class="pi pi-exclamation-triangle"></i></div>
+          <div class="kpi-label">Low Stock Items</div>
+          <strong>{{ data.low_stock_count }}</strong
+          ><small>Needs attention</small>
+        </div></p-card
+      >
+    }
+  </section>
+
+  <section class="kpi-grid financial-kpis" aria-label="Sales and billing indicators">
+    @if (loading()) {
+      @for (item of [1, 2, 3]; track item) {
+        <p-card styleClass="kpi-card financial-card"
+          ><p-skeleton width="2.5rem" height="2.5rem" /><p-skeleton
+            width="8rem"
+            height=".75rem" /><p-skeleton width="9rem" height="1.8rem"
+        /></p-card>
+      }
+    } @else if (summary(); as data) {
+      <p-card styleClass="kpi-card financial-card"
+        ><div class="kpi-content">
+          <div class="kpi-icon green"><i class="pi pi-chart-line"></i></div>
+          <div class="kpi-label">Dispatched Sales</div>
+          <strong>₹{{ data.dispatched_sales_total | number: '1.2-2' }}</strong
+          ><small>Total sales (dispatched)</small>
+        </div></p-card
+      >
+      <p-card styleClass="kpi-card financial-card"
+        ><div class="kpi-content">
+          <div class="kpi-icon blue"><i class="pi pi-wallet"></i></div>
+          <div class="kpi-label">Payments Received</div>
+          <strong>₹{{ data.payments_received_total | number: '1.2-2' }}</strong
+          ><small>Total payments received</small>
+        </div></p-card
+      >
+      <p-card styleClass="kpi-card financial-card"
+        ><div class="kpi-content">
+          <div class="kpi-icon red"><i class="pi pi-file"></i></div>
+          <div class="kpi-label">Outstanding Balance</div>
+          <strong>₹{{ data.outstanding_balance | number: '1.2-2' }}</strong
+          ><small>Pending payments</small>
+        </div></p-card
+      >
+    }
+  </section>
+
+  <section class="reports-grid">
+    <p-card styleClass="report-card chart-card"
+      ><div class="card-heading">
+        <div>
+          <h2><i class="pi pi-chart-bar blue-text"></i> Monthly Sales</h2>
+          <p>Dispatched sales over the selected period</p>
+        </div>
+        <p-button
+          label="Selected period"
+          icon="pi pi-calendar"
+          [text]="true"
+          severity="secondary"
+          size="small"
+        />
+      </div>
+      @if (loading()) {
+        <p-skeleton width="100%" height="17rem" />
+      } @else if (monthlyChartData(); as chart) {
+        @if (monthlySales().length) {
+          <p-chart type="bar" [data]="chart" [options]="monthlyChartOptions" height="250" />
+        } @else {
+          <div class="empty-state">
+            <i class="pi pi-chart-bar"></i><span>No sales data for this period.</span>
+          </div>
+        }
+      }
+    </p-card>
+    <p-card styleClass="report-card chart-card products-chart-card"
+      ><div class="card-heading">
+        <div>
+          <h2><i class="pi pi-trophy amber-text"></i> Top Selling Products</h2>
+          <p>Units sold from dispatched orders</p>
+        </div>
+        <span class="chart-unit">Units sold</span>
+      </div>
+      @if (loading()) {
+        <p-skeleton width="100%" height="17rem" />
+      } @else if (topProductsChartData(); as chart) {
+        @if (topProducts().length) {
+          <p-chart type="bar" [data]="chart" [options]="topProductsChartOptions" height="250" />
+        } @else {
+          <div class="empty-state">
+            <i class="pi pi-box"></i><span>No product sales data for this period.</span>
+          </div>
+        }
+      }
+    </p-card>
+  </section>
+
+  <section class="reports-grid tables-grid">
+    <p-card styleClass="report-card table-card"
+      ><div class="card-heading">
+        <div>
+          <h2><i class="pi pi-shopping-cart blue-text"></i> Recent Orders</h2>
+          <p>Latest non-cancelled orders</p>
+        </div>
+        <p-button
+          label="View all"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          [text]="true"
+          severity="secondary"
+          size="small"
+          routerLink="/dashboard/orders"
+        />
+      </div>
+      @if (loading()) {
+        @for (item of [1, 2, 3, 4, 5]; track item) {
+          <div class="row-skeleton">
+            <p-skeleton width="7rem" /><p-skeleton width="6rem" /><p-skeleton width="4rem" />
+          </div>
+        }
+      } @else if (recentOrders().length) {
+        <div class="compact-table">
+          <div class="table-row table-header">
+            <span>Order #</span><span>Customer</span><span>Total</span><span>Status</span
+            ><span>Created</span>
+          </div>
+          @for (order of recentOrders(); track order.id) {
+            <div class="table-row">
+              <strong>{{ order.order_number }}</strong
+              ><span>{{ order.customer_name }}</span
+              ><span>₹{{ order.total_amount | number: '1.2-2' }}</span
+              ><p-tag [value]="order.status" [severity]="statusSeverity(order.status)" /><span>{{
+                order.created_at | displayDate
+              }}</span>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="empty-state"><i class="pi pi-inbox"></i><span>No recent orders.</span></div>
+      }
+    </p-card>
+    <p-card styleClass="report-card table-card"
+      ><div class="card-heading">
+        <div>
+          <h2><i class="pi pi-exclamation-triangle red-text"></i> Low Stock Alerts</h2>
+          <p>Products at or below reorder level</p>
+        </div>
+        <p-button
+          label="View all"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          [text]="true"
+          severity="secondary"
+          size="small"
+          routerLink="/dashboard/inventory"
+        />
+      </div>
+      @if (loading()) {
+        @for (item of [1, 2, 3, 4, 5]; track item) {
+          <div class="row-skeleton">
+            <p-skeleton width="7rem" /><p-skeleton width="4rem" /><p-skeleton width="5rem" />
+          </div>
+        }
+      } @else if (lowStockProducts().length) {
+        <div class="compact-table">
+          <div class="table-row table-header">
+            <span>Product</span><span>Code</span><span>Available</span><span>Reorder at</span
+            ><span></span>
+          </div>
+          @for (product of lowStockProducts(); track product.product_id) {
+            <div class="table-row">
+              <div>
+                <strong>{{ product.name }}</strong>
+              </div>
+              <span>{{ product.code }}</span
+              ><p-tag [value]="product.available_quantity + ' units'" severity="warn" /><span>{{
+                product.reorder_level
+              }}</span
+              ><i class="pi pi-arrow-right alert-arrow"></i>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="empty-state healthy">
+          <i class="pi pi-check-circle"></i><span>Inventory levels look healthy.</span>
+        </div>
+      }
+    </p-card>
+  </section>
+</section>

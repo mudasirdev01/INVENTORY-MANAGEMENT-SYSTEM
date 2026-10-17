@@ -1,0 +1,99 @@
+<p-dialog
+  [(visible)]="visible"
+  (visibleChange)="visibleChange.emit($event)"
+  [modal]="true"
+  [draggable]="false"
+  [closable]="!saving()"
+  [header]="order ? 'Edit pending order' : 'Create sales order'"
+  [style]="{ width: 'min(760px, calc(100vw - 2rem))' }"
+  ><form class="dialog-form" (ngSubmit)="save()">
+    @if (error()) {
+      <p class="form-error">{{ error() }}</p>
+    }
+    <div class="field">
+      <label>Customer</label
+      ><p-select
+        name="customer"
+        [options]="customers"
+        [(ngModel)]="selectedCustomer"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="Select an active customer"
+        [loading]="customersLoading"
+        [disabled]="saving()"
+      />
+    </div>
+    <div class="line-items-heading">
+      <strong>Order items</strong
+      ><p-button
+        type="button"
+        label="Add line"
+        icon="pi pi-plus"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="addLine()"
+      />
+    </div>
+    @for (line of lines; track $index; let index = $index) {
+      <div class="line-row">
+        <div class="field product-field">
+          <label>Product</label
+          ><p-select
+            [name]="'product-' + index"
+            [options]="products"
+            [(ngModel)]="line.product"
+            optionLabel="name"
+            optionValue="id"
+            placeholder="Select product"
+            [loading]="productsLoading"
+            [disabled]="saving()"
+          />
+        </div>
+        <div class="field quantity-field">
+          <label>Quantity</label
+          ><p-inputnumber
+            [name]="'quantity-' + index"
+            [(ngModel)]="line.quantity"
+            [min]="1"
+            [showButtons]="true"
+            [disabled]="saving()"
+          />
+        </div>
+        <div class="line-price">
+          <span>Unit price</span>
+          @if (productFor(line.product); as product) {
+            <strong>₹{{ product.unit_price }}</strong
+            ><small>Line: ₹{{ lineTotal(line) | number: '1.2-2' }}</small>
+          } @else {
+            <small>Select a product</small>
+          }
+        </div>
+        <p-button
+          type="button"
+          icon="pi pi-trash"
+          [text]="true"
+          [rounded]="true"
+          severity="danger"
+          (onClick)="removeLine(index)"
+          [disabled]="lines.length === 1 || saving()"
+        />
+      </div>
+    }
+    <div class="grand-total">
+      <span>Grand total</span><strong>₹{{ grandTotal() | number: '1.2-2' }}</strong>
+    </div>
+    <div class="dialog-actions">
+      <p-button
+        type="button"
+        label="Cancel"
+        severity="secondary"
+        [text]="true"
+        (onClick)="close()"
+      /><p-button
+        type="submit"
+        [label]="order ? 'Save changes' : 'Create order'"
+        icon="pi pi-check"
+        [loading]="saving()"
+      />
+    </div></form
+></p-dialog>

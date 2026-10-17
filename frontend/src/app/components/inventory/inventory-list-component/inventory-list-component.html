@@ -1,0 +1,188 @@
+<section class="inventory-page">
+  <div class="inventory-heading">
+    <div>
+      <span class="eyebrow">Operations</span>
+      <h1>Inventory</h1>
+      <p>Track stock levels, movements and reorder points.</p>
+    </div>
+  </div>
+  <div class="view-switcher">
+    <p-button
+      label="Overview"
+      icon="pi pi-chart-bar"
+      [outlined]="view !== 'overview'"
+      (onClick)="selectView('overview')"
+    /><p-button
+      label="Low stock"
+      icon="pi pi-exclamation-triangle"
+      [outlined]="view !== 'low-stock'"
+      severity="warn"
+      (onClick)="selectView('low-stock')"
+    /><p-button
+      label="Transaction history"
+      icon="pi pi-history"
+      [outlined]="view !== 'history'"
+      severity="secondary"
+      (onClick)="selectView('history')"
+    />
+  </div>
+  <p-card styleClass="inventory-card">
+    <div class="filter-bar">
+      <div class="search-field">
+        <i class="pi pi-search"></i
+        ><input
+          pInputText
+          [(ngModel)]="search"
+          placeholder="Search by product or code..."
+          (keyup.enter)="applyFilters()"
+        />
+      </div>
+      @if (view === 'history') {
+        <p-select
+          [options]="transactionTypes"
+          [(ngModel)]="transactionType"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Transaction type"
+          (onChange)="applyFilters()"
+        /><p-select
+          [options]="productOptions()"
+          [(ngModel)]="transactionProduct"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="Product"
+          [showClear]="true"
+          (onChange)="applyFilters()"
+        />
+      }
+      <p-button
+        label="Search"
+        icon="pi pi-search"
+        severity="secondary"
+        (onClick)="applyFilters()"
+      />
+    </div>
+    @if (view !== 'history') {
+      <p-table [value]="stock()" [loading]="loading()" [tableStyle]="{ 'min-width': '68rem' }"
+        ><ng-template #header
+          ><tr>
+            <th>Product</th>
+            <th>Physical</th>
+            <th>Reserved</th>
+            <th>Available</th>
+            <th>Reorder level</th>
+            <th>Status</th>
+            @if (canManage()) {
+              <th class="actions-column">Actions</th>
+            }
+          </tr></ng-template
+        ><ng-template #body let-item
+          ><tr>
+            <td>
+              <strong>{{ item.name }}</strong
+              ><small>{{ item.code }}</small>
+            </td>
+            <td>{{ item.physical_quantity }}</td>
+            <td>{{ item.reserved_quantity }}</td>
+            <td class="available-value">{{ item.available_quantity }}</td>
+            <td>{{ item.reorder_level }}</td>
+            <td>
+              <p-tag
+                [value]="item.available_quantity <= item.reorder_level ? 'Low stock' : 'Healthy'"
+                [severity]="item.available_quantity <= item.reorder_level ? 'warn' : 'success'"
+              />
+            </td>
+            @if (canManage()) {
+              <td class="actions-column">
+                @if (item.is_active) {
+                  <p-button
+                    icon="pi pi-arrow-down-left"
+                    [text]="true"
+                    [rounded]="true"
+                    severity="success"
+                    ariaLabel="Stock in"
+                    (onClick)="openMovement('IN', item)"
+                  /><p-button
+                    icon="pi pi-arrow-up-right"
+                    [text]="true"
+                    [rounded]="true"
+                    severity="danger"
+                    ariaLabel="Stock out"
+                    (onClick)="openMovement('OUT', item)"
+                  /><p-button
+                    icon="pi pi-sliders-h"
+                    [text]="true"
+                    [rounded]="true"
+                    severity="secondary"
+                    ariaLabel="Stock settings"
+                    (onClick)="openSettings(item)"
+                  />
+                }
+              </td>
+            }</tr></ng-template
+        ><ng-template #emptymessage
+          ><tr>
+            <td [attr.colspan]="canManage() ? 7 : 6" class="empty-state">
+              No stock records found.
+            </td>
+          </tr></ng-template
+        ></p-table
+      >
+    } @else {
+      <p-table
+        [value]="transactions()"
+        [loading]="loading()"
+        [tableStyle]="{ 'min-width': '68rem' }"
+        ><ng-template #header
+          ><tr>
+            <th>Date</th>
+            <th>Product</th>
+            <th>Type</th>
+            <th>Quantity</th>
+            <th>Reason</th>
+            <th>Reference</th>
+            <th>Created by</th>
+          </tr></ng-template
+        ><ng-template #body let-transaction
+          ><tr>
+            <td>{{ transaction.created_at | displayDate }}</td>
+            <td class="code-value">{{ transaction.product_code }}</td>
+            <td>
+              <p-tag
+                [value]="transaction.transaction_type"
+                [severity]="transaction.transaction_type === 'IN' ? 'success' : 'danger'"
+              />
+            </td>
+            <td>{{ transaction.quantity }}</td>
+            <td>{{ transaction.reason }}</td>
+            <td>{{ transaction.reference || '—' }}</td>
+            <td>{{ transaction.created_by }}</td>
+          </tr></ng-template
+        ><ng-template #emptymessage
+          ><tr>
+            <td colspan="7" class="empty-state">No transactions found.</td>
+          </tr></ng-template
+        ></p-table
+      >
+    }
+    <p-paginator
+      [first]="(page - 1) * pageSize"
+      [rows]="pageSize"
+      [totalRecords]="totalRecords()"
+      [rowsPerPageOptions]="[10, 20, 50]"
+      (onPageChange)="onPageChange($event)"
+    />
+  </p-card>
+</section>
+@if (canManage()) {
+  <app-stock-movement-component
+    [(visible)]="movementVisible"
+    [type]="movementType"
+    [product]="selectedProduct()"
+    (changed)="onChanged()"
+  /><app-stock-settings-component
+    [(visible)]="settingsVisible"
+    [product]="selectedProduct()"
+    (changed)="onChanged()"
+  />
+}

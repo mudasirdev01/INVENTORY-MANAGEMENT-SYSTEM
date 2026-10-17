@@ -1,0 +1,145 @@
+<section class="orders-page">
+  <div class="orders-heading">
+    <div>
+      <span class="eyebrow">Sales</span>
+      <h1>Sales Orders</h1>
+      <p>Create orders, reserve stock and follow fulfillment status.</p>
+    </div>
+    @if (canManage()) {
+      <p-button label="Create order" icon="pi pi-plus" (onClick)="openCreate()" />
+    }
+  </div>
+  <p-card styleClass="orders-card"
+    ><div class="filter-bar">
+      <div class="search-field">
+        <i class="pi pi-search"></i
+        ><input
+          pInputText
+          [(ngModel)]="search"
+          placeholder="Search order, customer or product..."
+          (keyup.enter)="applyFilters()"
+        />
+      </div>
+      <p-select
+        [options]="statusOptions"
+        [(ngModel)]="statusFilter"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Status"
+        (onChange)="applyFilters()"
+      /><p-select
+        [options]="customers()"
+        [(ngModel)]="customerId"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="Customer"
+        [showClear]="true"
+        (onChange)="applyFilters()"
+      /><p-button
+        label="Search"
+        icon="pi pi-search"
+        severity="secondary"
+        (onClick)="applyFilters()"
+      />
+    </div>
+    <p-table [value]="orders()" [loading]="loading()" [tableStyle]="{ 'min-width': '64rem' }"
+      ><ng-template #header
+        ><tr>
+          <th>Order</th>
+          <th>Customer</th>
+          <th>Items</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr></ng-template
+      ><ng-template #body let-order
+        ><tr>
+          <td>
+            <strong class="order-number">{{ order.order_number }}</strong
+            ><small>{{ order.items.length }} line(s)</small>
+          </td>
+          <td>{{ order.customer_name }}</td>
+          <td>{{ order.items.length }}</td>
+          <td class="total-value">₹{{ order.total_amount | number: '1.2-2' }}</td>
+          <td>
+            <p-tag [value]="order.status_display" [severity]="statusSeverity(order.status)" />
+          </td>
+          <td>{{ order.created_at | displayDate }}</td>
+          <td class="actions-column">
+            <p-button
+              icon="pi pi-eye"
+              [text]="true"
+              [rounded]="true"
+              severity="secondary"
+              ariaLabel="View order"
+              (onClick)="openDetails(order)"
+            />
+            @if (canManage() && order.status === 'pending') {
+              <p-button
+                icon="pi pi-pencil"
+                [text]="true"
+                [rounded]="true"
+                severity="secondary"
+                ariaLabel="Edit order"
+                (onClick)="openEdit(order)"
+              /><p-button
+                icon="pi pi-check"
+                [text]="true"
+                [rounded]="true"
+                severity="success"
+                ariaLabel="Confirm order"
+                (onClick)="confirmAction(order, 'confirm')"
+              />
+            }
+            @if (canManage() && order.status === 'confirmed') {
+              <p-button
+                icon="pi pi-send"
+                [text]="true"
+                [rounded]="true"
+                severity="info"
+                ariaLabel="Dispatch order"
+                (onClick)="confirmAction(order, 'dispatch')"
+              />
+            }
+            @if (canManage() && (order.status === 'pending' || order.status === 'confirmed')) {
+              <p-button
+                icon="pi pi-times"
+                [text]="true"
+                [rounded]="true"
+                severity="danger"
+                ariaLabel="Cancel order"
+                (onClick)="confirmAction(order, 'cancel')"
+              />
+            }
+          </td></tr></ng-template
+      ><ng-template #emptymessage
+        ><tr>
+          <td colspan="7" class="empty-state">No orders found.</td>
+        </tr></ng-template
+      ></p-table
+    ><p-paginator
+      [first]="(page - 1) * pageSize"
+      [rows]="pageSize"
+      [totalRecords]="totalRecords()"
+      [rowsPerPageOptions]="[10, 20, 50]"
+      (onPageChange)="onPageChange($event)"
+  /></p-card>
+</section>
+@if (canManage()) {
+  <app-order-add-edit-component
+    [(visible)]="editorVisible"
+    [order]="editingOrder()"
+    [customers]="customers()"
+    [products]="products()"
+    [customersLoading]="customersLoading()"
+    [productsLoading]="productsLoading()"
+    (saved)="onOrderSaved($event)"
+  />
+}
+<app-order-detail-component
+  [(visible)]="detailsVisible"
+  [order]="selectedOrder()"
+  [canManage]="canManage()"
+  (action)="selectedOrder() && confirmAction(selectedOrder()!, $event)"
+/>

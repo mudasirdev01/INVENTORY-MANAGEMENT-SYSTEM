@@ -1,0 +1,59 @@
+.dialog-form {
+  min-height: 0;
+}
+.dialog-body {
+  display: grid;
+  gap: 1rem;
+  max-height: 390px;
+  overflow-y: auto;
+  padding: 0.1rem 0.35rem 0.4rem 0;
+}
+:host ::ng-deep .employee-dialog .p-dialog-content {
+  overflow: visible;
+}
+:host ::ng-deep .employee-select-panel {
+  max-width: 100%;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.field {
+  display: grid;
+  gap: 0.45rem;
+}
+.field label {
+  color: #334155;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.field label span {
+  color: #dc2626;
+}
+.field input,
+:host ::ng-deep .field .p-select,
+:host ::ng-deep .field .p-password {
+  width: 100%;
+}
+.form-error {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.7rem 0.8rem;
+  border-radius: 0.5rem;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 0.85rem;
+}
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  width: 100%;
+}
+@media (max-width: 640px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

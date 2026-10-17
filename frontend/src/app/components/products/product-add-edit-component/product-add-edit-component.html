@@ -1,0 +1,107 @@
+<p-dialog
+  [(visible)]="visible"
+  (visibleChange)="visibleChange.emit($event)"
+  [modal]="true"
+  [draggable]="false"
+  [closable]="!saving()"
+  [header]="product ? 'Edit product' : 'Add product'"
+  [style]="{ width: 'min(560px, calc(100vw - 2rem))' }"
+>
+  <form class="dialog-form" (ngSubmit)="save()">
+    @if (formError()) {
+      <p class="form-error"><i class="pi pi-exclamation-circle"></i>{{ formError() }}</p>
+    }
+    <div class="form-grid">
+      <div class="field">
+        <label for="product-code">Code</label
+        ><input
+          pInputText
+          id="product-code"
+          name="code"
+          [(ngModel)]="form.code"
+          placeholder="e.g. LAP-001"
+          [disabled]="saving()"
+        />
+      </div>
+      <div class="field">
+        <label for="product-name">Name</label
+        ><input
+          pInputText
+          id="product-name"
+          name="name"
+          [(ngModel)]="form.name"
+          placeholder="Product name"
+          [disabled]="saving()"
+        />
+      </div>
+    </div>
+    <div class="field">
+      <label for="product-category">Category</label
+      ><p-select
+        inputId="product-category"
+        name="category"
+        [options]="categories()"
+        [(ngModel)]="form.category"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="Select a category"
+        [disabled]="saving()"
+      />
+    </div>
+    <div class="field">
+      <label for="product-price">Unit price</label
+      ><p-inputnumber
+        inputId="product-price"
+        name="unit_price"
+        [(ngModel)]="form.unit_price"
+        mode="decimal"
+        [min]="0.01"
+        [minFractionDigits]="2"
+        [maxFractionDigits]="2"
+        placeholder="0.00"
+        [disabled]="saving()"
+      />
+    </div>
+    <div class="field">
+      <label for="product-description">Description</label
+      ><textarea
+        pTextarea
+        id="product-description"
+        name="description"
+        [(ngModel)]="form.description"
+        rows="3"
+        placeholder="Optional description"
+        [disabled]="saving()"
+      ></textarea>
+    </div>
+    @if (product) {
+      <div class="field">
+        <label for="product-status">Status</label
+        ><p-select
+          inputId="product-status"
+          name="is_active"
+          [options]="statusOptions"
+          [(ngModel)]="form.is_active"
+          optionLabel="label"
+          optionValue="value"
+          [disabled]="saving()"
+        />
+      </div>
+    }
+    <div class="dialog-actions">
+      <p-button
+        type="button"
+        label="Cancel"
+        severity="secondary"
+        [text]="true"
+        (onClick)="close()"
+        [disabled]="saving()"
+      /><p-button
+        type="submit"
+        [label]="product ? 'Save changes' : 'Create product'"
+        icon="pi pi-check"
+        [loading]="saving()"
+      />
+    </div>
+  </form>
+</p-dialog>

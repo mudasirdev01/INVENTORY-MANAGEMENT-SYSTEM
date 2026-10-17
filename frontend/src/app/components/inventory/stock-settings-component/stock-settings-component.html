@@ -1,0 +1,49 @@
+<p-dialog
+  [(visible)]="visible"
+  (visibleChange)="visibleChange.emit($event)"
+  [modal]="true"
+  [draggable]="false"
+  [closable]="!saving()"
+  header="Stock settings"
+  [style]="{ width: 'min(480px, calc(100vw - 2rem))' }"
+  ><form class="dialog-form" (ngSubmit)="save()">
+    @if (error()) {
+      <p class="form-error"><i class="pi pi-exclamation-circle"></i>{{ error() }}</p>
+    }
+    <div class="selected-product">
+      <span>Product</span><strong>{{ product?.name }}</strong
+      ><small>Physical stock: {{ product?.physical_quantity }}</small>
+    </div>
+    <div class="field">
+      <label for="reserved-quantity">Reserved quantity</label
+      ><p-inputnumber
+        inputId="reserved-quantity"
+        name="reserved_quantity"
+        [(ngModel)]="reserved_quantity"
+        [min]="0"
+        [showButtons]="true"
+        [disabled]="saving()"
+      />
+    </div>
+    <div class="field">
+      <label for="reorder-level">Reorder level</label
+      ><p-inputnumber
+        inputId="reorder-level"
+        name="reorder_level"
+        [(ngModel)]="reorder_level"
+        [min]="0"
+        [showButtons]="true"
+        [disabled]="saving()"
+      />
+    </div>
+    <div class="dialog-actions">
+      <p-button
+        type="button"
+        label="Cancel"
+        severity="secondary"
+        [text]="true"
+        (onClick)="close()"
+        [disabled]="saving()"
+      /><p-button type="submit" label="Save settings" icon="pi pi-check" [loading]="saving()" />
+    </div></form
+></p-dialog>

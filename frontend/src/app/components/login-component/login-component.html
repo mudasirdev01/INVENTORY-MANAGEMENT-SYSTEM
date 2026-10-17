@@ -1,0 +1,60 @@
+<div class="login-page">
+  <form class="login-card" (ngSubmit)="onLogin()">
+    <div class="brand-mark">
+      <i class="pi pi-box"></i>
+    </div>
+
+    <div class="login-heading">
+      <span class="eyebrow">Inventory workspace</span>
+      <h1>Welcome back</h1>
+      <p>Sign in to manage your inventory securely.</p>
+    </div>
+
+    <div class="field">
+      <label for="email">Email address</label>
+      <input
+        pInputText
+        id="email"
+        type="email"
+        name="email"
+        [(ngModel)]="email"
+        placeholder="you@example.com"
+        autocomplete="username"
+        required
+      />
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <p-password
+        inputId="password"
+        name="password"
+        [(ngModel)]="password"
+        placeholder="Enter your password"
+        autocomplete="current-password"
+        [feedback]="false"
+        [toggleMask]="true"
+        styleClass="login-password"
+      />
+    </div>
+
+    @if (errorMessage()) {
+      <p-message severity="error" variant="simple">{{ errorMessage() }}</p-message>
+    }
+
+    <p-button
+      type="submit"
+      [label]="loading() ? 'Signing in...' : 'Sign in'"
+      icon="pi pi-arrow-right"
+      iconPos="right"
+      [loading]="loading()"
+      [disabled]="loading()"
+      styleClass="login-submit"
+    />
+
+    <div class="login-footer">
+      <i class="pi pi-shield"></i>
+      <span>Protected with secure authentication</span>
+    </div>
+  </form>
+</div>

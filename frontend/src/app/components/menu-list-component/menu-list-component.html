@@ -1,0 +1,19 @@
+<nav class="side-nav" [class.collapsed]="collapsed" aria-label="Workspace navigation">
+  @for (item of menuItems; track item.route) {
+    <a
+      [routerLink]="item.route"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
+      (click)="itemSelected.emit()"
+    >
+      <i [class]="item.icon"></i>
+      <span>{{ item.label }}</span>
+    </a>
+  }
+  @if (isAdmin()) {
+    <a routerLink="/dashboard/employees" routerLinkActive="active" (click)="itemSelected.emit()">
+      <i class="pi pi-id-card"></i>
+      <span>Employees</span>
+    </a>
+  }
+</nav>
