@@ -91,6 +91,50 @@ npm start
 
 Open `http://localhost:4200/`. The development API URL is configured in `frontend/src/environments/environment.development.ts`; production uses `/api`.
 
+## Docker deployment
+
+The Docker stack is intended for a live-like deployment on the `stage` branch. It runs Angular behind Nginx, Django with Gunicorn, and PostgreSQL 16 with named persistent volumes.
+
+### Configure the stack
+
+Copy `docker.env.example` to `.env.docker` and replace the secret placeholders:
+
+```bash
+copy docker.env.example .env.docker   # Windows PowerShell
+# cp docker.env.example .env.docker   # macOS/Linux
+```
+
+Set `DJANGO_ALLOWED_HOSTS` to the deployment hostname and use a long random value for both `DJANGO_SECRET_KEY` and `POSTGRES_PASSWORD`. `.env.docker` is ignored by Git.
+
+The example stack serves HTTP on the configured frontend port, so it keeps `SECURE_SSL_REDIRECT=False`. For a live HTTPS deployment, terminate TLS at the external proxy/load balancer, set `SECURE_SSL_REDIRECT=True`, and update `DJANGO_ALLOWED_HOSTS` and `CSRF_TRUSTED_ORIGINS` for the real HTTPS origin.
+
+### Build and start
+
+```bash
+docker compose --env-file .env.docker up --build -d
+```
+
+Open the application at `http://localhost:8080` by default, or use the port configured by `FRONTEND_PORT`.
+
+The backend container runs migrations and `collectstatic` before starting Gunicorn. PostgreSQL data is stored in the `postgres_data` named volume; the existing local PostgreSQL installation and local development database are not modified.
+
+### Check status and logs
+
+```bash
+docker compose --env-file .env.docker ps
+docker compose --env-file .env.docker logs -f backend
+docker compose --env-file .env.docker logs -f frontend
+docker compose --env-file .env.docker logs -f db
+```
+
+### Stop the stack
+
+```bash
+docker compose --env-file .env.docker down
+```
+
+Do not use `docker compose down -v` unless the Docker PostgreSQL volume is intentionally being removed. The Docker database is separate from any PostgreSQL data used by the Windows local workflow.
+
 ## Environment variables
 
 Use [`backend/.env.example`](backend/.env.example) as the template. Important values include:
